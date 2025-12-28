@@ -9,47 +9,45 @@ int main()
     int n;
     cin >> n;
 
-    vector<int> a(n);
-    for (int i = 0; i < n; i++)
-        cin >> a[i];
-    vector<int> b(n);
-    for (int i = 0; i < n; i++)
-        cin >> b[i];
+    vector<int> cows(n);
+    vector<int> species(n);
 
-    vector<int> ans(n + 1);
+    for (int i = 0; i < n; ++i)
+        cin >> cows[i];
+    for (int i = 0; i < n; ++i)
+        cin >> species[i];
 
-    vector<int> prefix(n);
-    for (int i = 1; i < n; i++)
-        prefix[i] = prefix[i - 1] + (a[i - 1] == b[i - 1]);
-    vector<int> postfix(n);
-    for (int i = n - 2; i >= 0; i--)
-        postfix[i] = postfix[i + 1] + (a[i + 1] == b[i + 1]);
+    vector<bool> pre(n);
+    int same = 0;
+    for (int i = 0; i < n; ++i) {
+        pre[i] = cows[i] == species[i];
+        same += cows[i] == species[i];
+    }
 
-    for (int i = 0; i < n; i++) {
-        int count = 0;
-        for (int j = 0; j < n; j++) {
-            if (i - j < 0 || i + j >= n)
-                break;
-            if (a[i - j] == b[i + j])
-                count++;
-            if (j > 0 && (a[i + j] == b[i - j]))
-                count++;
-            ans[count + prefix[i - j] + postfix[i + j]]++;
+    vector<int> ans(n + 1, 0);
+    for (int c = 0; c < n; ++c) {
+        int prev = same;
+        for (int i = 0; i <= min(c, n - c - 1); ++i) {
+            prev -= pre[c + i];
+            prev += cows[c + i] == species[c - i];
+            prev -= pre[c - i];
+            prev += cows[c - i] == species[c + i];
+            ans[prev]++;
         }
-        count = 0;
-        for (int j = 0; j < n; j++) {
-            if (i - j < 0 || i + j + 1 >= n)
-                break;
-            if (a[i - j] == b[i + j + 1])
-                count++;
-            if (a[i + j + 1] == b[i - j])
-                count++;
-            ans[count + prefix[i - j] + postfix[i + j + 1]]++;
+    }
+    for (int c = 0; c < n - 1; ++c) {
+        int prev = same;
+        for (int i = 0; i <= min(c, n - c - 2); ++i) {
+            prev -= pre[c + i + 1];
+            prev += cows[c + i + 1] == species[c - i];
+            prev -= pre[c - i];
+            prev += cows[c - i] == species[c + i + 1];
+            ans[prev]++;
         }
     }
 
-    for (int i = 0; i <= n; i++)
-        cout << ans[i] << "\n";
+    for (const int& a : ans)
+        cout << a << endl;
 
     return 0;
 }
