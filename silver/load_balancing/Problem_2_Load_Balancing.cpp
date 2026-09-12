@@ -10,18 +10,18 @@ int main()
     ios_base::sync_with_stdio(false);
     cin.tie(nullptr);
 
-    ifstream fin("balancing.in");
-    ofstream fout("balancing.out");
+    freopen("balancing.in", "r", stdin);
+    freopen("balancing.out", "w", stdout);
 
     int n;
-    fin >> n;
+    cin >> n;
 
     vector<Cow> cows(n);
     vector<int> xs;
     xs.reserve(n);
 
     for (int i = 0; i < n; ++i) {
-        fin >> cows[i].x >> cows[i].y;
+        cin >> cows[i].x >> cows[i].y;
         xs.push_back(cows[i].x);
     }
 
@@ -68,6 +68,6 @@ int main()
         }
     }
 
-    fout << ans << "\n";
+    cout << ans << "\n";
     return 0;
 }
